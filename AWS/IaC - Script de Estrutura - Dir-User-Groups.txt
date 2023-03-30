@@ -28,6 +28,7 @@ userdel -r -f roberto
 userdel -r -f rogerio
 
 ### Iniciando Ambiene ###
+
 echo "Criando Diretorios"
 
 mkdir /publico
