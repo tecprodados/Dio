@@ -1,69 +1,36 @@
 #!/bin/bash
 
-### Limpando Ambiente
+### Update/Upgrade
 
-echo "Removendo Diretorios"
+echo "Realziando Update e Upgrade"
 
-rm -Rf /publico
-rm -Rf /adm
-rm -Rf /ven
-rm -Rf /sec
+apt-get update /y
+apt-get upgrade /y
 
-echo "Removendo Grupos"
+### Install Apache
 
-groupdel GRP_ADM
-groupdel GRP_VEN
-groupdel GRP_SEC
+echo "Instalar e iniciar Apache"
 
-echo "Removendo Usuarios"
+apt-get install apache2 /y
 
-userdel -r -f carlos
-userdel -r -f debora
-userdel -r -f josefina
-userdel -r -f maria
-userdel -r -f sebastiana
-userdel -r -f amanda
-userdel -r -f joao
-userdel -r -f roberto
-userdel -r -f rogerio
+systemctl enable apache2
+systemctl start apache2
 
-### Iniciando Ambiene ###
+### Install Unzip
+echo "Instalar Unzip"
+apt-get install unzip  /y
 
-echo "Criando Diretorios"
+### Baixando aplicacao
 
-mkdir /publico
-mkdir /adm
-mkdir /ven
-mkdir /sec
+echo "Baixando e descompactando aplicacao"
+cd /tmp
+wget https://github.com/denilsonbonatti/linux-site-dio/archive/refs/heads/main.zip 
 
-echo "Criando Grupos"
+echo "Descompactando arquivo"
+unzip mail.zip
 
-groupadd GRP_ADM
-groupadd GRP_VEN
-groupadd GRP_SEC
+### Copiando aplicacao para pasta apache
 
-echo "Criando  Usuarios"
-
-useradd carlos -c "Carlos" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-useradd debora -c "Debora" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-useradd josefina -c "Josefina" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-useradd maria -c "Maria" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-useradd sebastiana -c "Sebastiana" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-useradd amanda -c "Amanda" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-useradd joao -c "Joao" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-useradd roberto -c "Roberto" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-useradd rogerio -c "Rogerio" -s /bin/bash -m -p $(openssl passwd -crypt senha123)
-
-echo "Definindo proprietários dos diretorios"
-
-chown root:root /publico
-chown root:GRP_ADM /adm
-chown root:GRP_VEN /ven
-chown root:GRP_SEC /sec
-
-echo "Definindo permissão nos diretorios"
-
-chmod 777 /publico
-chmod 770 /adm
-chmod 770 /ven
-chmod 770 /sec
+echo "Copiando arquivos para /var/www/html"
+cd ./linux-site-dio-main
+cp * /var/www/html -y -r -v
